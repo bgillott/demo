@@ -1,15 +1,23 @@
 import { Component, useState } from "react";
 import "./Sidebar.css";
 import axios from "axios";
+import Point from "./Point.jsx";
+
+
 
 class Sidebar extends Component {
-  async get() {
+  async getAllPoints() {
     const response = await axios.get("http://localhost:8080/api/points", {
       headers: { "Content-Type": "application/json" },
     });
     console.log(response.data);
+
+    // return response.data.map((p) =>
+    //     <Point key = {p.id} name = "PointOne" id={1} x={1} y={1} z={1}/>
+    // );
+    return (<Point name = "Hello"/>);
   }
-  async post() {
+  async addPoint() {
     const response = await axios.post(
       "http://localhost:8080/api/point",
       { title: "BrowserPoint", x: 1, y: 2, z: 3 },
@@ -21,16 +29,12 @@ class Sidebar extends Component {
   render() {
     return (
       <div className={"sidebar"}>
-        <h2>Points!</h2>
-        <div>
-          <p>name: Point1</p>
-          <p>id: 0</p>
-          <p>124.9, 189.4, 67.1</p>
-          <button onClick={this.get}> get </button>
-          <button onClick={this.post}> post </button>
-        </div>
+        <h2>Points</h2>
+        {this.getAllPoints()}
+        {/*<Point name = "PointOne" id={1} x={1} y={1} z={1}/>*/}
       </div>
     );
   }
 }
+
 export default Sidebar;

@@ -11,15 +11,16 @@
   flex-direction: column;
 }
 
-h1, h2{
-  align-self: center;
-  text-decoration: underline;
+.bot{
+  display: flex;
+  flex-direction: row;
 }
 
-.sidebar{
-  width: 25vw;
-  height: 90vh;
-  background-color: #747bff;
-  display: flex;
-  flex-direction: column;
+.viewer{
+  flex: 1 1 0;
+}
+
+h1{
+  align-self: center;
+  text-decoration: underline;
 }
