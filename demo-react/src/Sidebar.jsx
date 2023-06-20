@@ -1,40 +1,48 @@
-import { Component, useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./Sidebar.css";
 import axios from "axios";
 import Point from "./Point.jsx";
 
+function Sidebar() {
+  const [points, setPoints] = useState([]);
 
-
-class Sidebar extends Component {
-  async getAllPoints() {
-    const response = await axios.get("http://localhost:8080/api/points", {
-      headers: { "Content-Type": "application/json" },
-    });
-    console.log(response.data);
-
-    // return response.data.map((p) =>
-    //     <Point key = {p.id} name = "PointOne" id={1} x={1} y={1} z={1}/>
-    // );
-    return (<Point name = "Hello"/>);
-  }
-  async addPoint() {
-    const response = await axios.post(
-      "http://localhost:8080/api/point",
-      { title: "BrowserPoint", x: 1, y: 2, z: 3 },
-      { headers: { "Content-Type": "application/json" } }
+  const getAllPoints = async () => {
+    const { data } = await axios.get(
+        "http://localhost:8080/api/points",
+        {
+          headers: { "Content-Type": "application/json" },
+        }
     );
-    console.log(response.data);
-  }
+    const points = data;
 
-  render() {
-    return (
-      <div className={"sidebar"}>
-        <h2>Points</h2>
-        {this.getAllPoints()}
-        {/*<Point name = "PointOne" id={1} x={1} y={1} z={1}/>*/}
+    setPoints(points);
+    // console.log(points);
+  };
+
+  useEffect(() => {
+    getAllPoints();
+  }, []);
+
+
+  return (
+    <div className={"sidebar"}>
+      <h2>Points</h2>
+      <div>
+        {points.map((p) => (
+            <Point key={p.id} id ={p.id} name={p.title} x={p.x} y={p.y} z={p.z}/>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Sidebar;
+
+// async addPoint() {
+//   const response = await axios.post(
+//     "http://localhost:8080/api/point",
+//     { title: "BrowserPoint", x: 1, y: 2, z: 3 },
+//     { headers: { "Content-Type": "application/json" } }
+//   );
+//   console.log(response.data);
+// }
