@@ -57,7 +57,8 @@ public class PointController {
     }
 
     // Delete a Point
-    @DeleteMapping("/point/{id}")
+//    @DeleteMapping("/point/{id}")
+    @RequestMapping(value = "/point/{id}",method=RequestMethod.DELETE)
     public ResponseEntity<?> deletePoint(@PathVariable(value = "id") Long pointId) throws Exception {
         Point point = pointRepository.findById(pointId)
                 .orElseThrow(() -> new Exception("Point not found " + pointId));

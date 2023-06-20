@@ -6,7 +6,7 @@ function Point(props){
 
     const deletePoint = async (id) => {
         const { data } = await axios.delete(
-            "http://localhost:8080/api/point",
+            "http://localhost:8080/api/point/" + id,
             {
                 headers: { "Content-Type": "application/json" },
             }
