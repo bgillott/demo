@@ -26,12 +26,10 @@ function Sidebar() {
 
   return (
     <div className={"sidebar"}>
-      <h2>Points</h2>
-      <div>
-        {points.map((p) => (
-            <Point key={p.id} id ={p.id} name={p.title} x={p.x} y={p.y} z={p.z}/>
-        ))}
-      </div>
+        <h2>Points</h2>
+            {points.map((p) => (
+                <Point key={p.id} id ={p.id} name={p.title} x={p.x} y={p.y} z={p.z}/>
+            ))}
     </div>
   );
 }
