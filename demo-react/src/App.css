@@ -12,8 +12,8 @@
 }
 
 .bot{
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 500px 500px;
 }
 
 .viewer{

@@ -1,0 +1,16 @@
+#root {
+}
+
+
+/*.container{*/
+/*  !*flex: 2 1 0;*!*/
+/*  height: 500px;*/
+/*  width: 500px;*/
+/*  background-color: #f9f9f9;*/
+/*}*/
+
+.meshCanvas{
+  width: 500px;
+  height: 800px;
+  background-color: red;
+}

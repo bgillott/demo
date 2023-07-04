@@ -6,14 +6,12 @@ h2{
   text-decoration: underline;
 }
 
-.sidebar{
-  /*width: 25vw;*/
-  /*overflow-y: scroll;*/
-  min-height: 80vh;
+mes
 
-  padding: 2px;
+.sidebar{
+  width: 25vw;
+
   background-color: #747bff;
-  flex: 1 1 0;
 
   display: flex;
   flex-direction: column;
