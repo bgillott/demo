@@ -24,13 +24,15 @@ function App() {
     }, []);
 
     async function addPoint(x, y, z) {
-      const response = await axios.post(
-        "http://localhost:8080/api/point",
-        { title: "Point", x: x, y: y, z: z},
-        { headers: { "Content-Type": "application/json" } }
-      );
-      console.log(response.data);
-      getAllPoints();
+        console.log("Adding point " + x + " " + y + " " + z);
+        const response = await axios.post(
+            "http://localhost:8080/api/point",
+            { title: "Point", x: x, y: y, z: z},
+            { headers: { "Content-Type": "application/json" } }
+        );
+
+        console.log(response.data);
+        getAllPoints();
     }
 
     const deletePoint = async (id) => {
