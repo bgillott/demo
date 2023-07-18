@@ -1,93 +1,111 @@
 import "./Canvas.css";
 
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import * as THREE from 'three'
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
-import Stats from "three/examples/jsm/libs/stats.module.js";
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-// import obj from "/Users/whiteout-bengillott/Desktop/Data/OBJ/teapot.obj";
+import Point from "./Point.jsx";
 
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera;
 
-function Canvas({addPoint}) {
+let loaded = false;
+// let objpath = '/src/assets/dragon.obj';
+let objpath = '/src/assets/hood_fixed.obj';
 
-  //SETUP FOR 3JS
-  useEffect(() => {
-    console.log("UseEffect starting 3js setup");
-    const WIDTH = 500;
-    const HEIGHT = 500;
-
-    let canvas = document.getElementById("meshCanvas");
-    canvas.style.backgroundColor = 'Lightgreen';
-
-    camera = new THREE.PerspectiveCamera(
-      50,
-        canvas.clientWidth/canvas.clientHeight,
-      1,
-      1000
-    );
-    camera.position.z = 96;
-
-    let renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-    })
-    renderer.setSize(WIDTH, HEIGHT);
-    document.getElementById("container").appendChild(renderer.domElement);
-
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    ambientLight.castShadow = true;
-    scene.add(ambientLight);
-
-    const spotLight = new THREE.SpotLight(0xffffff, 1);
-    spotLight.castShadow = true;
-    spotLight.position.set(0, 64, 32);
-    scene.add(spotLight);
-
-
-
-    const boxGeometry = new THREE.BoxGeometry(16, 16, 16);
-    const boxMaterial = new THREE.MeshNormalMaterial();
-    const boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    // scene.add(boxMesh);
-
-    const loader = new OBJLoader();
-    loader.load(
-        // resource URL
-        '/src/assets/dragon.obj',
-        // called when resource is loaded
-        function ( object ) {
-            scene.add(object);
-        },
-        // called when loading is in progresses
-        function ( xhr ) {
-            console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-        },
-        // called when loading has errors
-    function ( error ) {
-            console.log( 'An error happened' );
+function Canvas({addPoint, points}) {
+    useEffect(() => {
+        if(!loaded) {
+            sceneUp();
+            addPoints();
+            loaded = true;
         }
-    );
+    });
+
+    function sceneUp() {
+      console.log("UseEffect starting 3js setup");
+      const WIDTH = 700;
+      const HEIGHT = 700;
+
+      let canvas = document.getElementById("meshCanvas");
+      canvas.style.backgroundColor = 'Lightgreen';
+
+      camera = new THREE.PerspectiveCamera(
+          50,
+          canvas.clientWidth / canvas.clientHeight,
+          1,
+          1000
+      );
+      camera.position.z = 96;
+
+      let renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+      })
+      renderer.setSize(WIDTH, HEIGHT);
+      document.getElementById("container").appendChild(renderer.domElement);
 
 
-    const controls = new OrbitControls(camera, renderer.domElement)
-    // const stats = Stats();
-    // document.body.appendChild(stats.dom);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+      ambientLight.castShadow = true;
+      scene.add(ambientLight);
 
-    const animate = () => {
-      // stats.update();
-      controls.update();
-      // boxMesh.rotation.y += .005;
-      renderer.render(scene, camera);
-      window.requestAnimationFrame(animate);
-    };
+      const spotLight = new THREE.SpotLight(0xffffff, .8);
+      spotLight.castShadow = true;
+      spotLight.position.set(100, 500, 100);
+      scene.add(spotLight);
 
-    animate();
-  }, [])
+      const controls = new OrbitControls(camera, renderer.domElement)
+      // const stats = Stats();
+      // document.body.appendChild(stats.dom);
 
-  function canvasClicked(e){
+      const loader = new OBJLoader();
+
+      loader.load(
+            objpath,
+            function ( object ) {
+                let mesh = object.children[0];
+                scene.add(mesh);
+                // console.log(mesh);
+                fitCameraToObject(camera, mesh, 1.25, controls);
+            },
+            // called when loading is in progresses
+            function ( xhr ) {
+                // console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+            },
+            // called when loading has errors
+            function ( error ) {
+                console.log( 'An error happened' );
+                console.log( error );
+            }
+      );
+
+      const animate = () => {
+          // stats.update();
+          controls.update();
+          // boxMesh.rotation.y += .005;
+          renderer.render(scene, camera);
+          window.requestAnimationFrame(animate);
+      };
+
+      animate();
+    }
+
+    function addPoints(){
+        // console.log("Outputting all points");
+        console.log(points);
+        var dotGeometry = new THREE.BufferGeometry();
+        var dotMaterial = new THREE.PointsMaterial( { size: 1, sizeAttenuation: false } );
+
+        // points.map((p) => (
+        //     dotGeometry.vertices.push(new THREE.Vector3( p.x, p.x, p.z))
+        // ))
+
+        var dot = new THREE.Points( dotGeometry, dotMaterial );
+        scene.add(dot);
+    }
+
+    function canvasClicked(e){
       let raycaster = new THREE.Raycaster();
       let mouse = new THREE.Vector2();
 
@@ -106,13 +124,57 @@ function Canvas({addPoint}) {
         let point = intersects[0].point;
         addPoint(point.x, point.y, point.z);
       }
-  }
+    }
 
-  return (
+    const fitCameraToObject = function ( camera, mesh, offset, controls ) {
+        offset = offset || 1.25;
+        const boundingBox = new THREE.Box3();
+
+        mesh.geometry.computeBoundingBox();
+        boundingBox.copy( mesh.geometry.boundingBox ).applyMatrix4( mesh.matrixWorld );
+        // console.log(boundingBox);
+
+        const center = new THREE.Vector3();
+        boundingBox.getCenter(center);
+        // console.log(center);
+
+        const size = new THREE.Vector3();
+        boundingBox.getSize(size);
+        // console.log(size);
+
+        // get the max side of the bounding box (fits to width OR height as needed )
+        const maxDim = Math.max( size.x, size.y, size.z );
+        const fov = camera.fov * ( Math.PI / 180 );
+        let cameraZ = Math.abs( maxDim / 4 * Math.tan( fov * 2 ) );
+
+        cameraZ *= offset; // zoom out a little so that objects don't fill the screen
+
+        camera.position.z = cameraZ;
+
+        const minZ = boundingBox.min.z;
+        const cameraToFarEdge = ( minZ < 0 ) ? -minZ + cameraZ : cameraZ - minZ;
+
+        camera.far = cameraToFarEdge * 3;
+        camera.updateProjectionMatrix();
+
+        if ( controls ) {
+            // set camera to rotate around center of loaded object
+            controls.target = center;
+
+            // prevent camera from zooming out far enough to create far plane cutoff
+            controls.maxDistance = cameraToFarEdge * 2;
+            controls.saveState();
+        } else {
+
+            camera.lookAt( center )
+        }
+    }
+
+    return (
       <div id={"container"} className={"container"}>
-        <canvas id={"meshCanvas"} className={"meshCanvas"} onClick={canvasClicked}/>
+        <canvas id={"meshCanvas"} className={"meshCanvas"} onDoubleClick={canvasClicked}/>
       </div>
-  );
+    );
 }
 
 export default Canvas;

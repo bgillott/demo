@@ -11,3 +11,13 @@ h2{
   background-color: #747bff;
   border: 2px solid #1a1a1a;
 }
+
+.del{
+  background-color: red;
+}
+
+.bot{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

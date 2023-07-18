@@ -9,20 +9,19 @@ h2{
 mes
 
 .sidebar{
-  width: 25vw;
-
-  background-color: #747bff;
-
+  /*width: 25vw;*/
   display: flex;
   flex-direction: column;
 }
 
-.plist{
-  overflow:hidden;
-  overflow-y:scroll;
+h2{
+  padding-left: 20px;
 }
 
-.navi{
-  overflow:hidden;
+.pointsList{
+  background-color: #f9f9f9;
+  padding: 10px;
+  width: 400px;
+  height: 600px;
   overflow-y:scroll;
 }

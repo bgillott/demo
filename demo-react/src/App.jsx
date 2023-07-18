@@ -6,6 +6,11 @@ import Canvas from "./Canvas.jsx";
 
 function App() {
     const [points, setPoints] = useState([]);
+
+    useEffect(() => {
+        getAllPoints();
+    }, []);
+
     const getAllPoints = async () => {
         const { data } = await axios.get(
             "http://localhost:8080/api/points",
@@ -16,22 +21,15 @@ function App() {
         const points = data;
 
         setPoints(points);
-        console.log("Updated all points");
     };
 
-    useEffect(() => {
-        getAllPoints();
-    }, []);
-
     async function addPoint(x, y, z) {
-        console.log("Adding point " + x + " " + y + " " + z);
         const response = await axios.post(
             "http://localhost:8080/api/point",
             { title: "Point", x: x, y: y, z: z},
             { headers: { "Content-Type": "application/json" } }
         );
 
-        console.log(response.data);
         getAllPoints();
     }
 
@@ -43,7 +41,6 @@ function App() {
             }
         );
         const ret = data;
-        console.log("Deleted");
         getAllPoints();
     };
 
@@ -52,7 +49,7 @@ function App() {
       <h1>Mesh Viewer</h1>
       <div className={"bot"}>
         <Sidebar points={points} deletePoint={deletePoint}/>
-        <Canvas addPoint={addPoint}/>
+        <Canvas addPoint={addPoint} points={points}/>
       </div>
     </div>
   );

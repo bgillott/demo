@@ -6,9 +6,12 @@ function Point(props){
     return (
       <div className={"point"}>
           {/*<p>name: {props.name}</p>*/}
-          <p>id: {props.id}</p>
-          <p>{"("+ props.x + ", " + props.y + ", " + props.z +")"}</p>
-          <button onClick={() => props.deletePoint(props.id)}> X </button>
+            <div className={"bot"}>
+                <p>Point ID: {props.id}</p>
+                <button className={"del"} onClick={() => props.deletePoint(props.id)}> X </button>
+            </div>
+          <p>{"("+ props.x.toFixed(5) + ",  " + props.y.toFixed(5) + ",  " + props.z.toFixed(5) +")"}</p>
+
       </div>
     );
 }
