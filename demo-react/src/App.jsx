@@ -18,9 +18,9 @@ function App() {
                 headers: { "Content-Type": "application/json" },
             }
         );
-        const points = data;
+        const pts = data;
 
-        setPoints(points);
+        setPoints(pts);
     };
 
     async function addPoint(x, y, z) {
@@ -49,7 +49,7 @@ function App() {
       <h1>Mesh Viewer</h1>
       <div className={"bot"}>
         <Sidebar points={points} deletePoint={deletePoint}/>
-        <Canvas addPoint={addPoint} points={points}/>
+        <Canvas points={points} addPoint={addPoint}/>
       </div>
     </div>
   );

@@ -12,12 +12,14 @@ let camera = new THREE.PerspectiveCamera;
 let loaded = false;
 // let objpath = '/src/assets/dragon.obj';
 let objpath = '/src/assets/hood_fixed.obj';
+let spherelist = [];
 
-function Canvas({addPoint, points}) {
+function Canvas({points, addPoint}) {
+
     useEffect(() => {
         if(!loaded) {
             sceneUp();
-            addPoints();
+            // drawPoints();
             loaded = true;
         }
     });
@@ -91,19 +93,39 @@ function Canvas({addPoint, points}) {
       animate();
     }
 
-    function addPoints(){
-        // console.log("Outputting all points");
+    useEffect(()=>{
+        console.log('Points have changed');
         console.log(points);
-        var dotGeometry = new THREE.BufferGeometry();
-        var dotMaterial = new THREE.PointsMaterial( { size: 1, sizeAttenuation: false } );
 
-        // points.map((p) => (
-        //     dotGeometry.vertices.push(new THREE.Vector3( p.x, p.x, p.z))
-        // ))
 
-        var dot = new THREE.Points( dotGeometry, dotMaterial );
-        scene.add(dot);
-    }
+        spherelist.map((s) =>(
+            scene.remove(s)
+        ))
+        spherelist = [];
+
+        const geometry = new THREE.SphereGeometry( 5, 16, 8);
+        const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+
+
+        function addeach(p){
+            const sphere = new THREE.Mesh( geometry, material );
+            sphere.position.set(p.x, p.y, p.z);
+
+            spherelist.push(sphere);
+        }
+
+        points.map((p) => (
+            addeach(p)
+        ))
+
+        spherelist.map((s)=> (
+                scene.add(s)
+            )
+        )
+
+
+    },[points]);
+
 
     function canvasClicked(e){
       let raycaster = new THREE.Raycaster();
@@ -172,7 +194,7 @@ function Canvas({addPoint, points}) {
 
     return (
       <div id={"container"} className={"container"}>
-        <canvas id={"meshCanvas"} className={"meshCanvas"} onDoubleClick={canvasClicked}/>
+          <canvas id={"meshCanvas"} className={"meshCanvas"} onDoubleClick={canvasClicked}/>
       </div>
     );
 }
